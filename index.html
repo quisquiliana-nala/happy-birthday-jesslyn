@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Happy Birthday, Jesslyn!</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <!-- Tombol kontrol global -->
+  <div class="floating-controls">
+    <button onclick="toggleTheme()">🌓</button>
+    <button id="musicBtn" onclick="toggleMusic()">🎵</button>
+  </div>
+
+  <canvas id="confettiCanvas"></canvas>
+
+  <div class="card">
+    <div id="step1">
+      <p>Hei Jesslyn!</p>
+      <button onclick="startMusic(); nextStep(2)">Hai, Nabil!</button>
+    </div>
+
+    <div id="step2" class="hidden">
+      <p>today is your day. but first, lemme ask how you're doing. how's your day going?</p>
+      <button onclick="nextStep(5)">totally fine!</button>
+      <button onclick="nextStep(3)">i'm not okay, nabil</button>
+    </div>
+
+    <div id="step3" class="hidden">
+      <img class="friend-photo" src="sungcheol.jpeg" alt="Foto Rina">
+      <p>oh dear... hope your day gets better after seeing this. <br>
+        here's a greeting from Sungcheol to make your day even better eakkkkkkk</p>
+      <button onclick="nextStep(4)">AMIN</button>
+    </div>
+
+    <div id="step4" class="hidden">
+      <p>to make your day extra special, you should check out the gift i made.
+        i struggled with coding in the middle of my coding tasks too, eakkk</p>
+      <button onclick="nextStep(6)">HERE, JESS!</button>
+    </div>
+
+    <div id="step5" class="hidden">
+      <p>glad to hear that, jess! hope your day is going well and smoothly.
+        so, look at my gift for you.</p>
+      <button onclick="nextStep(6)">put your finger here</button>
+    </div>
+
+    <div id="step6" class="hidden">
+      <h1>Happy Birthday, Jesslyn 💖</h1>
+      <img class="friend-photo" id="birthdayPhoto" src="seventeen_scoups.jpeg" alt="#">
+      <p id="typeTextTarget"></p>
+      <div class="cake">🎂</div>
+      <br>
+      <button onclick="launchConfetti(200)">🎉</button>
+      <button onclick="resetSteps()">🔄</button>
+    </div>
+  </div>
+
+  <audio id="bgMusic" loop>
+    <source src="22.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    const music = document.getElementById("bgMusic");
+    const musicBtn = document.getElementById("musicBtn");
+
+    function startMusic() {
+      music.play().catch(() => {});
+      musicBtn.textContent = "⏸️";
+    }
+
+    function toggleMusic() {
+      if (music.paused) {
+        music.play().catch(() => {});
+        musicBtn.textContent = "⏸️";
+      } else {
+        music.pause();
+        musicBtn.textContent = "▶️";
+      }
+    }
+
+    function toggleTheme() {
+      document.body.classList.toggle("dark");
+    }
+
+    // Tema gelap otomatis (malam hari)
+    const now = new Date();
+    const hour = now.getHours();
+    if (hour >= 18 || hour < 6) {
+      document.body.classList.add("dark");
+    }
+
+    function nextStep(n) {
+      document.querySelectorAll('.card > div').forEach(d => d.classList.add('hidden'));
+      document.getElementById('step' + n).classList.remove('hidden');
+
+      if (n === 5) launchConfetti(120);
+
+      if (n === 6) {
+  launchConfetti(150);
+  // pastikan nama file gambar sesuai di folder yang sama
+  document.getElementById('birthdayPhoto').src = "seventeen_scoups.jpeg";
+
+  const message = `First of all, thank you for being my friend for the past few years. I never thought we would still be friends today, but I'm happy we are. I hope our friendship keeps going until the end, until the time when we're no longer alone.
+
+Happy birthday, Jesslyn. Yesterday you experienced heartbreak, and I know you're not really sad, but I'm sure you feel really sad when you're alone. I just hope at your age now and in the future, you'll always be surrounded by kind people who care about you. May you be surrounded by happiness and blessings in every moment of your life.
+
+Don't get tired of telling me your stories, Jess. I always enjoy hearing them, and I hope you enjoy being friends with me too. Right now, just focus on your life. Don't fall in love yet. Because honestly, when you told me about your breakup, your sad story, I felt it too, and as your friend, I don't like seeing you hurt by someone who doesn't deserve you. It’s not because I don’t like hearing your stories, but I don’t like seeing you hurt.
+
+Even if you meet a man who truly treats you well and loves you, I hope this doesn't happen again. Whatever bad things happen in your life, I hope they never repeat themselves. Lastly, I hope you stay healthy and happy always, Jess.
+
+Once again, happy birthday. You're one of the people I care about.`;
+
+  // ketikkan pesan dengan kecepatan sedikit lebih lambat biar dramatis
+  typeText("typeTextTarget", message, 25);
+}
+
+
+    }
+
+    function resetSteps() {
+      document.querySelectorAll('.card > div').forEach(d => d.classList.add('hidden'));
+      document.getElementById('step1').classList.remove('hidden');
+    }
+
+    function typeText(elementId, text, speed = 30) {
+      const el = document.getElementById(elementId);
+      el.innerHTML = "";
+      let i = 0;
+      const interval = setInterval(() => {
+        if (i < text.length) {
+          el.innerHTML += text[i];
+          i++;
+        } else {
+          clearInterval(interval);
+        }
+      }, speed);
+    }
+
+    // Confetti
+    const canvas = document.getElementById('confettiCanvas');
+    const ctx = canvas.getContext('2d');
+    let W = canvas.width = window.innerWidth;
+    let H = canvas.height = window.innerHeight;
+
+    window.addEventListener('resize', () => {
+      W = canvas.width = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+    });
+
+    function rand(min, max) {
+      return Math.random() * (max - min) + min;
+    }
+
+    class Particle {
+      constructor() {
+        this.x = rand(0, W);
+        this.y = rand(-H, 0);
+        this.size = rand(6, 12);
+        this.speedY = rand(2, 6);
+        this.speedX = rand(-2, 2);
+        this.color = `hsl(${Math.floor(rand(0, 360))},70%,60%)`;
+        this.life = rand(80, 200);
+      }
+
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        this.life--;
+      }
+
+      draw() {
+        ctx.fillStyle = this.color;
+        ctx.fillRect(this.x, this.y, this.size, this.size);
+      }
+    }
+
+    let particles = [];
+
+    function launchConfetti(amount = 100) {
+      for (let i = 0; i < amount; i++) particles.push(new Particle());
+    }
+
+    function loop() {
+      ctx.clearRect(0, 0, W, H);
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.update();
+        p.draw();
+        if (p.y > H + 50 || p.life <= 0) particles.splice(i, 1);
+      }
+      requestAnimationFrame(loop);
+    }
+
+    loop();
+  </script>
+</body>
+</html>

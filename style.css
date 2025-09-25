@@ -1,13 +1,15 @@
 body {
   margin: 0;
-  height: 100vh;
+  min-height: 100vh;           /* biar fleksibel */
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;     /* mulai dari atas */
   background: linear-gradient(135deg, #0e005f, #ffe6ff);
   font-family: "Poppins", sans-serif;
-  overflow: hidden;
+  overflow-x: hidden;          /* cegah scroll ke samping */
+  overflow-y: auto;            /* biar bisa scroll ke bawah */
   position: relative;
+  padding: 30px 10px;          /* kasih jarak biar nggak nempel ke atas */
 }
 
 body.dark {
@@ -34,6 +36,7 @@ body.dark p, body.dark h1 {
   z-index: 10;
   position: relative;
   animation: fadeIn 1s ease;
+  margin: auto;                /* biar tetap ke tengah secara horizontal */
 }
 
 .hidden { display: none; }
